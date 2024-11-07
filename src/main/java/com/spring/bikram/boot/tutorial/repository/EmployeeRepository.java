@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
+    Employee findByEmployeeName(String employeeName);
 }

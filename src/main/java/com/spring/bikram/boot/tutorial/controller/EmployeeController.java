@@ -26,4 +26,10 @@ public class EmployeeController {
     public Employee findEmployeeById(@PathVariable("id") Long empId){
         return employeeService.findEmployeeById(empId);
     }
+    @PutMapping("/employees/{id}")
+    public Employee updateEmployee(@PathVariable("id") Long empId,
+                                   @RequestBody Employee employee){
+        return employeeService.updateEmployee(empId, employee);
+
+    }
 }
