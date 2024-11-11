@@ -45,7 +45,5 @@ jobs:
       # Optional: Deploy to Docker container on host or cloud
       - name: Deploy Docker container
         run: |
-          docker-compose pull bikram82/myapp:latest
-          docker stop myapp || true
-          docker rm myapp || true
-          docker-compose up -d --remove-orphans -p 8080:8080 --name myapp ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          docker-compose -f docker-compose.yml pull
+          docker-compose -f docker-compose.yml up -d --remove-orphans

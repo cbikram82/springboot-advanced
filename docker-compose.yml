@@ -1,4 +1,3 @@
-version: '3'
 services:
   myapp:
     image: yourusername/myapp:latest  # Pulls the image from Docker Hub
