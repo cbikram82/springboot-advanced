@@ -43,4 +43,4 @@ jobs:
           docker-compose pull bikram82/myapp:latest
           docker stop myapp || true
           docker rm myapp || true
-          docker-compose up -d -p 8080:8080 --name myapp ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          docker-compose up -d --remove-orphans -p 8080:8080 --name myapp ${{ secrets.DOCKER_USERNAME }}/myapp:latest
