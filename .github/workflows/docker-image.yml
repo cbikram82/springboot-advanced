@@ -35,7 +35,7 @@ jobs:
       # Step 5: Build the Docker image for arm64 architecture
       - name: Build Docker image for ARM64
         run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t bikram82/myapp:latest --progress=plain --no-cache --load .
+          docker buildx build --platform linux/arm64 -t bikram82/myapp:latest --progress=plain --no-cache --load .
 
       # Step 6: Log in to Docker Hub (for pushing the image)
       - name: Log in to Docker Hub
@@ -66,4 +66,4 @@ jobs:
       # Step 3: Deploy the Docker container locally (optional)
       - name: Run Docker container locally
         run: |
-          docker run -d -p 8080:8080 --name myapp bikram82/myapp:latest
+          docker run --platform linux/arm64 -d -p 8080:8080 --name myapp bikram82/myapp:latest
