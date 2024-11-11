@@ -58,7 +58,7 @@ public class Department {
         this.departmentCode = departmentCode;
     }
 
-    @Override
+/*    @Override
     public String toString() {
         return "Department{" +
                 "departmentID=" + departmentID +
@@ -66,5 +66,5 @@ public class Department {
                 ", departmentAddress='" + departmentAddress + '\'' +
                 ", departmentCode='" + departmentCode + '\'' +
                 '}';
-    }
+    }*/
 }
