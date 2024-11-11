@@ -40,7 +40,7 @@ jobs:
       # Optional: Deploy to Docker container on host or cloud
       - name: Deploy Docker container
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/myapp:latest
+          docker pull bikram82/myapp:latest
           docker stop myapp || true
           docker rm myapp || true
           docker run -d -p 8080:8080 --name myapp ${{ secrets.DOCKER_USERNAME }}/myapp:latest
