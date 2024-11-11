@@ -1,4 +1,4 @@
-name: Build and Deploy Docker Image
+name: CI/CD Pipeline for Spring Boot Application
 
 on:
   push:
@@ -13,44 +13,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
+      # Step 1: Check out the code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Docker Buildx
+      # Step 2: Set up JDK (if your project requires building via Maven or Gradle)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adoptopenjdk'
+
+      # Step 3: Build the application (Maven example)
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      # Step 4: Set up Docker Buildx for multi-platform builds
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # Step 5: Build the Docker image for arm64 architecture
       - name: Build Docker image for ARM64
         run: |
           docker buildx build --platform linux/arm64 -t bikram82/myapp:latest .
 
-      # Step 3: Log in to Docker Hub (or another registry)
+      # Step 6: Log in to Docker Hub (for pushing the image)
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 4: Build and push Docker image
+      # Step 7: Push the Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: |
           docker push bikram82/myapp:latest
-deploy:
-  runs-on: ubuntu-latest
-  needs: build
 
-  steps:
-    # Step 1: Check out the code
-    - name: Checkout code
-      uses: actions/checkout@v3
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
 
-    # Step 2: Pull the Docker image (ARM64) from Docker Hub
-    - name: Pull Docker image from Docker Hub
-      run: |
-        docker pull bikram82/myapp:latest
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Step 3: Deploy the Docker container locally (optional)
-    - name: Run Docker container locally
-      run: |
-        docker run -d -p 8080:8080 --name myapp bikram82/myapp:latest
+      # Step 2: Pull the Docker image (ARM64) from Docker Hub
+      - name: Pull Docker image from Docker Hub
+        run: |
+          docker pull bikram82/myapp:latest
+
+      # Step 3: Deploy the Docker container locally (optional)
+      - name: Run Docker container locally
+        run: |
+          docker run -d -p 8080:8080 --name myapp bikram82/myapp:latest
