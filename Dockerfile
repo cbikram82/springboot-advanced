@@ -3,7 +3,6 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the built JAR file from the target folder to the container
-# Replace `todo-app-0.0.1-SNAPSHOT.jar` with your JAR file name
 ARG JAR_FILE=target/bootTutorial-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} app.jar
 
