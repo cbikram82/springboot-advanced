@@ -1,6 +1,6 @@
 services:
   myapp:
-    image: yourusername/myapp:latest  # Pulls the image from Docker Hub
+    image: bikram82/myapp:latest  # Pulls the image from Docker Hub
     container_name: myapp  # Optional, to set a custom container name
     ports:
       - "8080:8080"  # Maps host port 8080 to container port 8080
