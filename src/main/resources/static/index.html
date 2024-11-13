@@ -23,8 +23,7 @@
         <form id="employeeForm">
             <input type="hidden" id="empId">
             <input type="text" id="empName" placeholder="Employee Name" required><br>
-            <input type="number" id="empAge" placeholder="Employee Age" required><br>
-            <input type="text" id="empPosition" placeholder="Employee Position" required><br>
+            <input type="text" id="empLocation" placeholder="Employee Location"><br>
             <button type="submit">Save Employee</button>
         </form>
     </div>
@@ -36,8 +35,7 @@
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Age</th>
-            <th>Position</th>
+            <th>Location</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -48,7 +46,7 @@
 </div>
 
 <script>
-        const apiUrl = 'http://localhost:8080/employees'; // URL to your Spring Boot app's endpoint
+        const apiUrl = 'http://localhost:8080/employees'; // Update with your Spring Boot URL
 
         // Load and display all employees
         function loadEmployees() {
@@ -60,12 +58,12 @@
                     data.forEach(employee => {
                         const row = tableBody.insertRow();
                         row.innerHTML = `
-                            <td>${employee.id}</td>
-                            <td>${employee.name}</td>
-                            <td>${employee.age}</td>
-                            <td>${employee.position}</td>
+                            <td>${employee.employeeID}</td>
+                            <td>${employee.employeeName}</td>
+                            <td>${employee.employeeLocation}</td>
                             <td>
-                                <button onclick="editEmployee(${employee.id})">Edit</button>
+                                <button onclick="editEmployee(${employee.employeeID})">Edit</button>
+                                <button onclick="deleteEmployee(${employee.employeeID})">Delete</button>
                             </td>
                         `;
                     });
@@ -79,13 +77,11 @@
 
             const empId = document.getElementById('empId').value;
             const empName = document.getElementById('empName').value;
-            const empAge = document.getElementById('empAge').value;
-            const empPosition = document.getElementById('empPosition').value;
+            const empLocation = document.getElementById('empLocation').value;
 
             const employee = {
-                name: empName,
-                age: empAge,
-                position: empPosition
+                employeeName: empName,
+                employeeLocation: empLocation
             };
 
             let url = apiUrl;
@@ -117,12 +113,23 @@
             fetch(`${apiUrl}/${id}`)
                 .then(response => response.json())
                 .then(employee => {
-                    document.getElementById('empId').value = employee.id;
-                    document.getElementById('empName').value = employee.name;
-                    document.getElementById('empAge').value = employee.age;
-                    document.getElementById('empPosition').value = employee.position;
+                    document.getElementById('empId').value = employee.employeeID;
+                    document.getElementById('empName').value = employee.employeeName;
+                    document.getElementById('empLocation').value = employee.employeeLocation;
                 })
                 .catch(error => console.error('Error fetching employee details:', error));
+        }
+
+        // Delete an employee
+        function deleteEmployee(id) {
+            fetch(`${apiUrl}/${id}`, {
+                method: 'DELETE'
+            })
+                .then(() => {
+                    alert('Employee deleted successfully!');
+                    loadEmployees(); // Refresh the employee list
+                })
+                .catch(error => console.error('Error deleting employee:', error));
         }
 
         // Initial load of employees
