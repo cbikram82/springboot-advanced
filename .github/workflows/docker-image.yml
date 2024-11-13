@@ -50,7 +50,7 @@ jobs:
           docker push bikram82/myapp:latest
 
   deploy:
-    runs-on: [EC2-runner]
+    runs-on: [self-hosted, EC2-runner]
     needs: build
 
     steps:
