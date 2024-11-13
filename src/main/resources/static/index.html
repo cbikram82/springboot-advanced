@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        input, button { padding: 10px; margin: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px 10px; text-align: left; border: 1px solid #ddd; }
+        .form-container { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Employee Management</h1>
+
+    <!-- Form to Add/Update Employee -->
+    <div class="form-container">
+        <h2>Create/Update Employee</h2>
+        <form id="employeeForm">
+            <input type="hidden" id="empId">
+            <input type="text" id="empName" placeholder="Employee Name" required><br>
+            <input type="number" id="empAge" placeholder="Employee Age" required><br>
+            <input type="text" id="empPosition" placeholder="Employee Position" required><br>
+            <button type="submit">Save Employee</button>
+        </form>
+    </div>
+
+    <!-- Employee List -->
+    <h2>All Employees</h2>
+    <table id="employeeTable">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Position</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Employees will be listed here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+        const apiUrl = 'http://localhost:8080/employees'; // URL to your Spring Boot app's endpoint
+
+        // Load and display all employees
+        function loadEmployees() {
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('employeeTable').getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = ''; // Clear the table before populating
+                    data.forEach(employee => {
+                        const row = tableBody.insertRow();
+                        row.innerHTML = `
+                            <td>${employee.id}</td>
+                            <td>${employee.name}</td>
+                            <td>${employee.age}</td>
+                            <td>${employee.position}</td>
+                            <td>
+                                <button onclick="editEmployee(${employee.id})">Edit</button>
+                            </td>
+                        `;
+                    });
+                })
+                .catch(error => console.error('Error fetching employees:', error));
+        }
+
+        // Handle form submission to create or update employee
+        document.getElementById('employeeForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const empId = document.getElementById('empId').value;
+            const empName = document.getElementById('empName').value;
+            const empAge = document.getElementById('empAge').value;
+            const empPosition = document.getElementById('empPosition').value;
+
+            const employee = {
+                name: empName,
+                age: empAge,
+                position: empPosition
+            };
+
+            let url = apiUrl;
+            let method = 'POST';
+            if (empId) {
+                url = `${apiUrl}/${empId}`;
+                method = 'PUT';
+            }
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(employee),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(`Employee ${empId ? 'updated' : 'created'} successfully!`);
+                    loadEmployees(); // Refresh the employee list
+                    document.getElementById('employeeForm').reset(); // Reset form
+                    document.getElementById('empId').value = ''; // Clear employee ID
+                })
+                .catch(error => console.error('Error saving employee:', error));
+        });
+
+        // Pre-fill form for editing an employee
+        function editEmployee(id) {
+            fetch(`${apiUrl}/${id}`)
+                .then(response => response.json())
+                .then(employee => {
+                    document.getElementById('empId').value = employee.id;
+                    document.getElementById('empName').value = employee.name;
+                    document.getElementById('empAge').value = employee.age;
+                    document.getElementById('empPosition').value = employee.position;
+                })
+                .catch(error => console.error('Error fetching employee details:', error));
+        }
+
+        // Initial load of employees
+        loadEmployees();
+    </script>
+</body>
+</html>
