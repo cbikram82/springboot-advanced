@@ -35,7 +35,7 @@ jobs:
       # Step 5: Build the Docker image for arm64 architecture
       - name: Build Docker image for ARM64
         run: |
-          docker buildx build --platform linux/arm64 -t bikram82/myapp:latest --progress=plain --no-cache --load .
+          docker buildx build --platform linux/amd64 -t bikram82/myapp:latest --progress=plain --no-cache --load .
 
       # Step 6: Log in to Docker Hub (for pushing the image)
       - name: Log in to Docker Hub
