@@ -50,14 +50,14 @@ jobs:
           docker push bikram82/myapp:latest
 
   deploy:
-    runs-on: [self-hosted, ec2-runner]
+    runs-on: [self-hosted]
     needs: build
 
     steps:
       # Step 2: Pull the Docker image (ARM64) from Docker Hub
       - name: Pull Docker image from Docker Hub
-        run: |
-          docker pull bikram82/myapp:latest
+        run: docker pull bikram82/myapp:latest
+
       - name: Delete old Container
         run: docker rm -f myapp
       # Step 3: Deploy the Docker container locally (optional)
