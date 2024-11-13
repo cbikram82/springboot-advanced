@@ -50,14 +50,10 @@ jobs:
           docker push bikram82/myapp:latest
 
   deploy:
-    runs-on: [self-hosted, EC2-runner]
+    runs-on: [self-hosted, ec2-runner]
     needs: build
 
     steps:
-      # Step 1: Check out the code
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       # Step 2: Pull the Docker image (ARM64) from Docker Hub
       - name: Pull Docker image from Docker Hub
         run: |
