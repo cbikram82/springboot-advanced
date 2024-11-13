@@ -50,7 +50,7 @@ jobs:
           docker push bikram82/myapp:latest
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [EC2-runner]
     needs: build
 
     steps:
@@ -62,8 +62,9 @@ jobs:
       - name: Pull Docker image from Docker Hub
         run: |
           docker pull bikram82/myapp:latest
-
+      - name: Delete old Container
+        run: docker rm -f myapp
       # Step 3: Deploy the Docker container locally (optional)
-      - name: Run Docker container locally
+      - name: Run Docker container in AWS Instance
         run: |
-          docker run --platform linux/arm64 -d -p 8080:8080 --name myapp bikram82/myapp:latest
+          docker run -d -p 8080:8080 --name myapp bikram82/myapp:latest

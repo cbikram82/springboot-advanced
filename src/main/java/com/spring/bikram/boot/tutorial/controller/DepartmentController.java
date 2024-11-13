@@ -3,6 +3,9 @@ package com.spring.bikram.boot.tutorial.controller;
 import com.spring.bikram.boot.tutorial.entity.Department;
 import com.spring.bikram.boot.tutorial.service.DepartmentService;
 import jakarta.validation.Valid;
+import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +15,12 @@ import java.util.List;
 public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
-
+    private final Logger LOGGER =
+            LoggerFactory.getLogger(DepartmentController.class);
 
     @PostMapping("/departments")
     public Department saveDepartment(@Valid @RequestBody Department department) {
+        LOGGER.info("Inside the saveDepartment method of DepartmentController ");
         return departmentService.saveDepartment(department);
     }
 
@@ -26,6 +31,7 @@ public class DepartmentController {
 
     @GetMapping("/departments/{id}")
     public Department fetchDepartmentById(@PathVariable("id") Long departmentId) {
+        LOGGER.info("Inside the fetchDepart method of the DepartmentController");
         return departmentService.fetchDepartmentById(departmentId);
     }
 
