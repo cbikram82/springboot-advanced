@@ -43,10 +43,17 @@
         <!-- Employees will be listed here -->
         </tbody>
     </table>
+
+    <!-- Add this after your existing table -->
+    <div class="recommendations-container" style="margin-top: 20px;">
+        <h2>Similar Employees</h2>
+        <div id="recommendations"></div>
+    </div>
 </div>
 
 <script>
-        const apiUrl = 'http://54.162.138.246:8080/employees'; // Update with your Spring Boot URL
+       // const apiUrl = 'http://54.242.172.144:8080/employees'; // Update with your Spring Boot URL
+        const apiUrl = 'http://localhost:8080/employees'; // Update with your Spring Boot URL
 
         // Load and display all employees
         function loadEmployees() {
@@ -57,15 +64,31 @@
                     tableBody.innerHTML = ''; // Clear the table before populating
                     data.forEach(employee => {
                         const row = tableBody.insertRow();
-                        row.innerHTML = `
-                            <td>${employee.employeeID}</td>
-                            <td>${employee.employeeName}</td>
-                            <td>${employee.employeeLocation}</td>
-                            <td>
-                                <button onclick="editEmployee(${employee.employeeID})">Edit</button>
-                                <button onclick="deleteEmployee(${employee.employeeID})">Delete</button>
-                            </td>
-                        `;
+                        // Add cells for employee data
+                        row.insertCell().textContent = employee.employeeID;
+                        row.insertCell().textContent = employee.employeeName;
+                        row.insertCell().textContent = employee.employeeLocation;
+                        
+                        // Add actions cell
+                        const actionsCell = row.insertCell();
+                        
+                        // Add Edit button
+                        const editBtn = document.createElement('button');
+                        editBtn.textContent = 'Edit';
+                        editBtn.onclick = () => editEmployee(employee.employeeID);
+                        actionsCell.appendChild(editBtn);
+                        
+                        // Add Delete button
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.textContent = 'Delete';
+                        deleteBtn.onclick = () => deleteEmployee(employee.employeeID);
+                        actionsCell.appendChild(deleteBtn);
+                        
+                        // Add Find Similar button
+                        const findSimilarBtn = document.createElement('button');
+                        findSimilarBtn.textContent = 'Find Similar';
+                        findSimilarBtn.onclick = () => showSimilarEmployees(employee.employeeID);
+                        actionsCell.appendChild(findSimilarBtn);
                     });
                 })
                 .catch(error => console.error('Error fetching employees:', error));
@@ -134,6 +157,28 @@
 
         // Initial load of employees
         loadEmployees();
+
+        // Add this to your existing JavaScript
+        async function showSimilarEmployees(employeeId) {
+            try {
+                const response = await fetch(`${apiUrl}/${employeeId}/similar`);
+                const employees = await response.json();
+                
+                const recommendationsDiv = document.getElementById('recommendations');
+                recommendationsDiv.innerHTML = '<h3>Similar employees based on location:</h3>';
+                
+                const list = document.createElement('ul');
+                employees.forEach(emp => {
+                    const item = document.createElement('li');
+                    item.textContent = `${emp.employeeName} (${emp.employeeLocation})`;
+                    list.appendChild(item);
+                });
+                
+                recommendationsDiv.appendChild(list);
+            } catch (error) {
+                console.error('Error fetching similar employees:', error);
+            }
+        }
     </script>
 </body>
 </html>
